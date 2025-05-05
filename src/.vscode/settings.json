@@ -1,0 +1,13 @@
+{
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "typescript.autoImportSuggestions.enabled": true,
+    "javascript.autoImportSuggestions.enabled": true,
+    "editor.colorDecorators": true,
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
+  
+  
