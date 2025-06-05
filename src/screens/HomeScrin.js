@@ -25,6 +25,8 @@ import { BottomModal, SlideAnimation, ModalContent } from "react-native-modals";
 const { width } = Dimensions.get("window");
 import { UserType } from "../../UserContext";
 import jwt_decode from "jwt-decode";
+import { AntDesign } from '@expo/vector-icons';
+
 
 const HomeScrin = () => {
 
@@ -587,10 +589,10 @@ const HomeScrin = () => {
   const fetchAddresses = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.213:8000/addresses/${userId}`
+        `http://192.168.70.10:8000/addresses/${userId}`
       );
-      const addresses = Array.isArray(response.data?.adresses) 
-      ? response.data.adresses
+      const addresses = Array.isArray(response.data?.addresses) 
+      ? response.data.addresses
       : Array.isArray(response.data)
       ? response.data
       : [];  
@@ -601,7 +603,6 @@ const HomeScrin = () => {
       
     }
   };
-
   useEffect(() => {
     const fetchUser = async () => {
       const token = await AsyncStorage.getItem("authToken");
@@ -778,8 +779,8 @@ const HomeScrin = () => {
                   marginVertical: 10,
                   flexDirection: "row",
                   alignItems: "center",
-                }}
-              >
+                      }}
+                     >
                 <Image
                   key={item.id || index}
                   style={{ width: 195, height: 224, resizeMode: "contain" }}
@@ -920,11 +921,21 @@ const HomeScrin = () => {
         visible={modalVisible}
         OnTouchOutside={() => !modalVisible}
       >
-        <ModalContent style={{ height: "360", width: "100%" }}>
-          <View style={{ marginBottom: 8 }}>
+        <ModalContent style={{ height: "360", width: "100%",paddingHorizontal: 12 }}>
+        
+        <View style={{ flexDirection: 'row', alignItems: 'center' ,gap:2}}>  
+<Pressable  
+
+onPress={() =>  setModalVisible(false)}
+
+><AntDesign name="left" size={21} color="black" /></Pressable>
+
             <Text style={{ fontWeight: "500", fontSize: 16 }}>
               Joylashuvingizni tanlang
             </Text>
+            </View>
+            <View style={{ marginBottom: 8 }}>
+
 
             <Text style={{ fontSize: 16, marginTop: 6, color: "gray" }}>
               Mahsulot mavjudligi va yetkazib berish imkoniyatlarini ko'rish
@@ -971,7 +982,7 @@ const HomeScrin = () => {
                   borderWidth:1,
                   padding:10,
                   justifyContent:'center',
-                  alignItems:'center',
+                  alignItems:'flex-start',
                   gap:4,
                   marginRight:15,
                   marginTop:10,
@@ -991,9 +1002,12 @@ const HomeScrin = () => {
                     style={{
                       fontSize: 15,
                       fontWeight: "bold",
+                      marginTop:2
                     }}
                   >
                     {item?.region}
+                    {/* <Entypo name="location-pin" size={24} color="red" /> */}
+
              
                     </Text>
                     
@@ -1006,6 +1020,7 @@ const HomeScrin = () => {
                     style={{
                       color:'#181818',
                       fontSize: 15,
+                     alignItems:'flex-end'
                     }}
                   >
                     {item?.city}
@@ -1017,7 +1032,7 @@ const HomeScrin = () => {
                     color:'#181818',
                   }}
                 >
-                  {item?.houseNo},{item?.landmark}
+                  {item?.houseNo}
                 </Text>
               
                 <Text

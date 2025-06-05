@@ -7,6 +7,7 @@ import { UserType } from "../../UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import { AntDesign } from '@expo/vector-icons';
 
 export default function AddressScreen() {
   const navigation = useNavigation();
@@ -67,6 +68,7 @@ export default function AddressScreen() {
       Alert.alert("Xatolik", "Token yoki foydalanuvchi aniqlanmadi");
       return;
     }
+    
 
     const addressData = {
       userId,
@@ -80,12 +82,12 @@ export default function AddressScreen() {
         postalCode,
       },
     };
-
+    console.log("Jo‘natilayotgan ma'lumot:", addressData);
     try {
       if (addressId) {
       
         await axios.put(
-          `http://192.168.100.213:8000/addresses/${userId}/${addressId}`,
+          `http://192.168.70.10:8000/addresses/${userId}/${addressId}`,
           {
             region,
             city,
@@ -103,7 +105,7 @@ export default function AddressScreen() {
       } else {
         
         await axios.post(
-          `http://192.168.165.10:8000/addresses`,
+          `http://192.168.70.10:8000/addresses`,
           addressData,
           {
             headers: { Authorization: `Bearer ${token}` },
@@ -128,19 +130,28 @@ export default function AddressScreen() {
       );
     }
   };
-
+ 
   return (
       <ScrollView style={{ marginTop: 40 }}>
   
-       <View>
-       <View style={{ height: 53,  backgroundColor: "#9a42eb",alignItems:'center',justifyContent:'center',flexDirection:'row' }} >
-       <Text View style={{ fontSize:25,color:"white",fontWeight:'500' }}>Anor Market   </Text>
+  <View style={{ height: 53, backgroundColor: "#9a42eb", justifyContent: 'center' }}>
+  <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+    
+      
+       <Pressable 
+       onPress={() => navigation.navigate("Address")} 
+      >
+        <AntDesign name="left" size={24} color="white" />
+
+        </Pressable>
+       <Text style={{ fontSize:25,color:"white",fontWeight:'500',marginLeft:65}}>Anor Market   </Text>
        <Image
           source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5721/5721996.png' }}
           style={{ width: 40, height: 40 }}
         />
+   
      </View>
-  
+     
        </View>
   
         <View style={{ padding: 8 }}>

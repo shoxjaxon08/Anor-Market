@@ -37,7 +37,7 @@ export default function RegisterScrin() {
       password,
     };
   
-    axios.post('http://192.168.100.213:8000/register', user)
+    axios.post('http://192.168.70.10:8000/register', user)
      // uy -> 192.168.100.213  phone -> 192.168.248.10
       .then((response) => {
         console.log(response.data);
@@ -176,7 +176,7 @@ export default function RegisterScrin() {
               placeholder="Parolingizni kiriting"
               value={password}
               onChangeText={(text) => setPassword(text)}
-              secureTextEntry={!showPassword} // <-- bu joy asosiy
+              secureTextEntry={!showPassword}
               theme={{
                 colors: {
                   primary: 'gray',
@@ -213,7 +213,7 @@ export default function RegisterScrin() {
         onPress = {handleRegister}
           style={{
             width: 200,
-            backgroundColor: '#FEBE10',
+            backgroundColor: '#af10fe',
             borderRadius: 6,
             marginLeft: "auto",
             marginRight: 'auto',

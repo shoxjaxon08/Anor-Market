@@ -13,7 +13,8 @@ import AddAddresscreen from "../screens/AddAddresscreen";
 import AddresScreen from "../screens/AddresScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import CartScreen from "../screens/CartScreen";
-
+import ConfirmationScreen from "../screens/ConfirmationScreen";
+import OrderScreen from "../screens/OrderScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -42,7 +43,7 @@ function BottomTabs() {
         options={{
           tabBarLabel: "Profile",
           tabBarLabelStyle: { color: "#9a42eb", fontWeight: "bold" },
-          headerShown: false,
+          headerShown: true,
           tabBarIcon: ({ focused }) =>
             focused ? (
               <Ionicons name="person" size={24} color="#9a42eb" />
@@ -103,7 +104,19 @@ const StackNavigator = () => {
         component={AddresScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Profile" component={ProfileScreen} />
+
+      <Stack.Screen
+        name="Order"
+        component={OrderScreen}
+        options={{ headerShown: false }}
+      />
+      
+
+      <Stack.Screen
+        name="Confirm"
+        component={ConfirmationScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

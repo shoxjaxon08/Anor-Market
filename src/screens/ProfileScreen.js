@@ -1,114 +1,198 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
-// issor@1.0.0
-import axios from 'axios';
-import { UserType } from '../../UserContext'; // Sizning UserType kontekstingiz
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Pressable,
+} from "react-native";
+import React, { useLayoutEffect, useEffect, useContext, useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import { UserType } from "../../UserContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ProfileScreen = () => {
+  const { userId, setUserId } = useContext(UserType);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showOrders, setShowOrders] = useState(false); 
   const navigation = useNavigation();
-  const { userId } = useContext(UserType);
-  const [userData, setUserData] = useState({ name: '', email: '' });
 
-  // Foydalanuvchi ma'lumotlarini olish
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: "",
+      headerStyle: {
+        backgroundColor: "#71b0ef",
+      },
+
+      headerLeft: () => (
+        <Image
+          source={require("../../assets/AnorMarket.png")}
+          style={{ width: 140, height: 160, marginLeft: 16,marginBottom:4 }}
+          resizeMode="contain"
+        />
+      ),
+      headerRight: () => (
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 8,
+            marginRight: 16,
+          }}
+        >
+          <Ionicons name="notifications-outline" size={24} color="black" />
+          <AntDesign name="search1" size={24} color="black" />
+        </View>
+      ),
+    });
+  }, []);
+
+  const [user, setUser] = useState();
+
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem('authToken');
-        if (!token || !userId) {
-          Alert.alert('Xatolik', 'Foydalanuvchi ma\'lumotlari topilmadi');
-          navigation.navigate('Login');
-          return;
-        }
-
-        // Serverdan foydalanuvchi ma'lumotlarini olish
-        const response = await axios.get(`http://192.168.165.10:8000/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUserData(response.data);
+        const response = await axios.get(
+          `http://192.168.70.10:8000/profile/${userId}`
+        );
+        const { user } = response.data;
+        setUser(user);
       } catch (error) {
-        console.error('Foydalanuvchi ma\'lumotlarini olishda xatolik:', error);
-        Alert.alert('Xatolik', 'Ma\'lumotlarni yuklashda xato yuz berdi');
-        navigation.navigate('Login');
+        console.log("error", error);
       }
     };
-    fetchUserData();
-  }, [userId, navigation]);
 
-  // Logout funksiyasi
-  const handleLogout = async () => {
+    fetchUserProfile();
+  }, []);
+
+  const logout = async () => {
+    await AsyncStorage.removeItem("authToken");
+    console.log("auth token cleared");
+    navigation.replace("Login");
+  };
+
+  const handleFetchOrders = async () => {
     try {
-      await AsyncStorage.removeItem('authToken'); // Tokenni o‘chirish
-      Alert.alert('Muvaffaqiyat', 'Siz tizimdan chiqdingiz');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }], // Login ekraniga qaytish
-      });
+      setLoading(true);
+      const response = await axios.get(
+        `http://192.168.70.10:8000/orders/${userId}`
+      );
+      const orders = response.data.orders;
+      setOrders(orders);
+      setShowOrders(true); 
     } catch (error) {
-      console.error('Logout xatosi:', error);
-      Alert.alert('Xatolik', 'Chiqishda xato yuz berdi');
+      console.log("error", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Foydalanuvchi Profili</Text>
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Ism:</Text>
-        <Text style={styles.info}>{userData.name || 'Yuklanmoqda...'}</Text>
-      </View>
-      
-      <View style={styles.infoContainer}>
-        <Text style={styles.label}>Email:</Text>
-        <Text style={styles.info}>{userData.email || 'Yuklanmoqda...'}</Text>
+    <ScrollView style={{ marginLeft: 12, marginRight: 12 }}>
+      <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 6 }}>
+        Xush kelibsiz  {user?.name}
+      </Text>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 12,
+        }}
+      >
+        <Pressable onPress={handleFetchOrders} style={styles.optionButton}>
+          <Text style={styles.optionText}>Buyurtmalaringiz</Text>
+        </Pressable>
+
+        <Pressable
+          onPress={() => navigation.navigate("Cart")}
+          style={styles.optionButton}
+        >
+          <Text style={styles.optionText}>Savatcha</Text>
+        </Pressable>
       </View>
 
-      <Pressable style={styles.logoutButton} onPress={handleLogout}>
-        <Text style={styles.logoutText}>Tizimdan chiqish</Text>
-      </Pressable>
-    </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 12,
+        }}
+      >
+      <Pressable
+  onPress={() =>
+    navigation.getParent()?.navigate("Main", {
+      screen: "Home",
+    })
+  }
+  style={styles.optionButton}
+>
+  <Text style={styles.optionText}>Yana xarid qiling</Text>
+</Pressable>
+
+
+        <Pressable onPress={logout} style={styles.optionButton}>
+          <Text style={styles.optionText}>Chiqish</Text>
+        </Pressable>
+      </View>
+
+  
+      {showOrders && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {loading ? (
+            <Text style={{ fontSize: 16, marginTop: 10 }}>Yuklanmoqda...</Text>
+          ) : orders.length > 0 ? (
+            orders.map((order) => (
+              <Pressable style={styles.orderCard} key={order._id}>
+                {order.products.slice(0, 1).map((product) => (
+                  <View style={{ marginVertical: 10 }} key={product._id}>
+                    <Image
+                      source={{ uri: product.image }}
+                      style={{
+                        width: 100,
+                        height: 100,
+                        resizeMode: "contain",
+                      }}
+                    />
+                  </View>
+                ))}
+              </Pressable>
+            ))
+          ) : (
+            <Text style={{ marginTop: 10 }}>Buyurtmalar topilmadi</Text>
+          )}
+        </ScrollView>
+      )}
+    </ScrollView>
   );
 };
 
+export default ProfileScreen;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  infoContainer: {
-    flexDirection: 'row',
-    marginBottom: 15,
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    width: 100,
-  },
-  info: {
-    fontSize: 18,
+  optionButton: {
+    padding: 10,
+    backgroundColor: "#E0E0E0",
+    borderRadius: 25,
     flex: 1,
   },
-  logoutButton: {
-    marginTop: 30,
-    backgroundColor: '#FF3B30',
+  optionText: {
+    textAlign: "center",
+    fontWeight: "600",
+  },
+  orderCard: {
+    marginTop: 20,
     padding: 15,
-    borderRadius: 7,
-    alignItems: 'center',
-  },
-  logoutText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#d0d0d0",
+    marginHorizontal: 10,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
-
-export default ProfileScreen;

@@ -6,9 +6,8 @@ const orderSchema = new mongoose.Schema({
         ref:"User",
         required:true
     },
-    prodocts:[
-        {
-            
+    products:[
+        {         
             name:{ 
             type:String,
             required:true,
@@ -23,7 +22,7 @@ const orderSchema = new mongoose.Schema({
         },
          image:{
             type:String,
-            required:true
+            required:false
         },
     },
     ],
@@ -32,7 +31,7 @@ const orderSchema = new mongoose.Schema({
         required:true
     },
     shippingAddress: {
-        name:{
+        region:{
             type:String,
             required:true
         },

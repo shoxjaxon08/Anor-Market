@@ -46,7 +46,7 @@ const LoginScrin = () => {
             password: password,
         };
 
-        axios.post("http://192.168.100.213:8000/login", user) 
+        axios.post("http://192.168.70.10:8000/login", user) 
          // uy -> 192.168.100.213  phone -> 192.168.248.10
             .then((response) => {
                 console.log(response);
@@ -123,7 +123,7 @@ const LoginScrin = () => {
                             <Pressable
                                 onPress={() => {
                                     axios
-                                        .post("http://192.168.248.10:8000/resend-verification", { email: email.trim().toLowerCase() })
+                                        .post("http://192.168.70.10:8000/resend-verification", { email: email.trim().toLowerCase() })
                                         .then(() => {
                                             setMessage("Tasdiqlash emaili qayta yuborildi. Iltimos, emailingizni tekshiring.");
                                         })
@@ -145,7 +145,7 @@ const LoginScrin = () => {
                 <View style={{ marginTop: 80 }} />
                 <Pressable
                     onPress={handleLogin}
-                    style={{ width: 200, backgroundColor: '#FEBE10', borderRadius: 6, marginLeft: "auto", marginRight: 'auto', padding: 15 }}
+                    style={{ width: 200, backgroundColor: '#af10fe', borderRadius: 6, marginLeft: "auto", marginRight: 'auto', padding: 15 }}
                 >
                     <Text style={{ textAlign: 'center', color: "#ffff", fontSize: 16, fontWeight: 'bold' }}>Tizimga kirish</Text>
                 </Pressable>

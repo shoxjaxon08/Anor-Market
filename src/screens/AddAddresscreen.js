@@ -5,12 +5,12 @@ import {
   ScrollView,
   Pressable,
   TextInput,
-  Alert
+  Alert,
+  Image
 } from "react-native";
 import React, {
   useEffect,
   useState,
-  useCon,
   useContext,
   useCallback,
 } from "react";
@@ -20,10 +20,27 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { UserContext, UserType } from "../../UserContext";
 import axios from "axios";
 import { Entypo } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
+
+
 
 export default function AddAddresscreen() {
+  const route = useRoute();
+
+  useEffect(() => {
+    if (route.params?.openModal ===true) {
+      navigation.navigate('Main', { openModal: true }); // Modal ochish uchun Home'ga o'tish
+    }
+  }, [route.params?.openModal, navigation]);
+
+const openModalAndNavigate = () => {
+  console.log('Navigating to Main with params:', { openModal: true });
+  navigation.navigate("Main", { openModal: true });
+};
+
   const navigation = useNavigation();
   const [addresses, setAddresses] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const { userId, setUserId } = useContext(UserType);
   useEffect(() => {
     fetchAddresses();
@@ -37,7 +54,7 @@ export default function AddAddresscreen() {
       }
       console.log("API so‘rovi yuborilmoqda, userId:", userId);
       const response = await axios.get(
-        `http://192.168.100.213:8000/addresses/${userId}`
+        `http://192.168.70.10:8000/addresses/${userId}`
       );
       console.log("API to‘liq javobi:", response.data);
       const addresses = Array.isArray(response.data?.addresses)
@@ -70,38 +87,24 @@ export default function AddAddresscreen() {
       style={{ marginTop: 42, flex: 1, backgroundColor: "white" }}
       
     >
-      <View
-        style={{
-          backgroundColor: "#9a42eb",
-          padding: 10,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
+      <View style={{ height: 53, backgroundColor: "#9a42eb", justifyContent: 'center' }}>
+  <View style={{ flexDirection: 'row', alignItems: 'center', paddingHorizontal: 10 }}>
+    
       
-        <Pressable
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            marginHorizontal: 7,
-            gap: 10,
-            backgroundColor: "white",
-            borderRadius: 3,
-            height: 39,
-            flex: 1,
-          }}
-        >
-          <AntDesign
-            style={{ paddingLeft: 10 }}
-            name="search1"
-            size={22}
-            color="black"
-          />
-          <TextInput placeholder="Mahsulot qidirish" />
-        </Pressable>
+  <Pressable onPress={openModalAndNavigate}>
+        <AntDesign name="left" size={24} color="white" />
 
-        <Feather name="mic" size={24} color="white" />
-        </View>
+        </Pressable>
+       <Text  style={{ fontSize:25,color:"white",fontWeight:'500',marginLeft:65}}>Anor Market   </Text>
+       <Image
+          source={{ uri: 'https://cdn-icons-png.flaticon.com/128/5721/5721996.png' }}
+          style={{ width: 40, height: 40 }}
+        />
+   
+     </View>
+     
+       </View>
+
        <ScrollView showsVerticalScrollIndicator={false}>
       <View style={{ padding: 12 }}>
         <Text style={{ fontSize: 17, fontWeight: "bold" }}>
@@ -250,7 +253,7 @@ export default function AddAddresscreen() {
                             try {
                               // Serverdan manzilni o‘chirish
                               await axios.delete(
-                                `http://192.168.165.10:8000/addresses/${userId}/${item._id}`
+                                `http://192.168.70.10:8000/addresses/${userId}/${item._id}`
                               );
                               // Ro‘yxatni yangilash
                               setAddresses(
